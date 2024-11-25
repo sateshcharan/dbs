@@ -1,0 +1,40 @@
+
+services:
+
+  postgres_server:
+    image: postgres:14
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME} # Replace with your database name
+      POSTGRES_USER: ${DB_USER} # Replace with your user
+      POSTGRES_PASSWORD: ${DB_PASSWORD} # Replace with your password
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"  
+    networks:
+      - pg_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${ADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${ADMIN_PASSWORD}
+    ports:
+      - "8080:80"  
+    depends_on:
+      - postgres_server
+    networks:
+      - pg_network
+    volumes:
+      - ./pgadmin_data:/var/lib/pgadmin  
+
+networks:
+  pg_network:
+
+# volumes:
+#   postgres_data:
+#   pgadmin_data:
